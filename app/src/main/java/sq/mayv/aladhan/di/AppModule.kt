@@ -2,6 +2,7 @@ package sq.mayv.aladhan.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,6 +11,8 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sq.mayv.aladhan.data.ILocationService
+import sq.mayv.aladhan.data.LocationService
 import sq.mayv.aladhan.network.AladhanApi
 import sq.mayv.aladhan.repository.PrayersRepository
 import sq.mayv.aladhan.util.PreferenceHelper
@@ -29,6 +32,15 @@ object AppModule {
     fun providePreferences(@ApplicationContext context: Context): SharedPreferences {
         return PreferenceHelper.getPreference(context)
     }
+
+    @Singleton
+    @Provides
+    fun provideLocationClient(
+        @ApplicationContext context: Context
+    ): ILocationService = LocationService(
+        context,
+        LocationServices.getFusedLocationProviderClient(context)
+    )
 
     @Singleton
     @Provides

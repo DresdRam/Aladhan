@@ -1,6 +1,8 @@
 package sq.mayv.aladhan.repository
 
 import sq.mayv.aladhan.data.Resource
+import sq.mayv.aladhan.model.Coordinates
+import sq.mayv.aladhan.model.Prayer
 import sq.mayv.aladhan.model.Response
 import sq.mayv.aladhan.network.AladhanApi
 import javax.inject.Inject
@@ -9,15 +11,15 @@ class PrayersRepository @Inject constructor(
     private val api: AladhanApi
 ) {
 
-    suspend fun getCalendarPrayers(): Resource<Response<String>> {
+    suspend fun getCalendarPrayers(coordinates: Coordinates): Resource<Response<List<Prayer>>> {
 
-        val resource = Resource<Response<String>>()
+        val resource = Resource<Response<List<Prayer>>>()
 
         try {
 
             val result = api.getCalendarPrayers(
-                latitude = 0.00,
-                longitude = 0.00,
+                latitude = coordinates.latitude,
+                longitude = coordinates.longitude,
                 method = 5
             )
 

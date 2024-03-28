@@ -6,9 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import sq.mayv.aladhan.ui.screens.calendar.CalendarScreen
+import sq.mayv.aladhan.ui.screens.home.HomeScreen
+import sq.mayv.aladhan.ui.screens.load_prayers.LoadPrayersScreen
 
 @Composable
-fun AppNavigation(startDestination: String = AppScreens.route(AppScreens.HomeScreen)) {
+fun AppNavigation(startDestination: String = AppScreens.route(AppScreens.LoadPrayersScreen)) {
     val navigationController = rememberNavController()
     val transitionSpeed = 300
 
@@ -37,7 +40,7 @@ fun AppNavigation(startDestination: String = AppScreens.route(AppScreens.HomeScr
                     animationSpec = tween(transitionSpeed)
                 )
             }) {
-            //HomeScreen(navController = navigationController)
+            HomeScreen(navController = navigationController)
         }
 
         composable(
@@ -63,7 +66,33 @@ fun AppNavigation(startDestination: String = AppScreens.route(AppScreens.HomeScr
                     animationSpec = tween(transitionSpeed)
                 )
             }) {
-            //CalendarScreen(navController = navigationController)
+            CalendarScreen(navController = navigationController)
+        }
+
+        composable(
+            route = AppScreens.route(AppScreens.LoadPrayersScreen),
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }, popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(transitionSpeed)
+                )
+            }) {
+            LoadPrayersScreen(navController = navigationController)
         }
     }
 }

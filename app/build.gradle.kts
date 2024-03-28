@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "sq.mayv.aladhan"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "sq.mayv.aladhan"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
     packaging {
         resources {
@@ -53,11 +53,18 @@ android {
 
 dependencies {
 
+    //Lifecycle
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
     // Accompanist Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
     // Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Google Location Services
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
     // Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.50")
