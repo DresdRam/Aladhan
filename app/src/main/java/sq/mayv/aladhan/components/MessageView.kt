@@ -24,6 +24,7 @@ import sq.mayv.aladhan.R
 @Composable
 fun MessageView(
     message: String,
+    textColor: Color = colorResource(id = R.color.primary),
     buttonEnabled: Boolean = false,
     buttonMessage: String = "",
     onButtonClick: () -> Unit = { }
@@ -58,12 +59,14 @@ fun MessageView(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.primary)
+                    color = textColor
                 )
 
                 if (buttonEnabled) {
                     RoundedButton(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 25.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 25.dp),
                         text = buttonMessage,
                         onClicked = onButtonClick,
                         fontSize = 16

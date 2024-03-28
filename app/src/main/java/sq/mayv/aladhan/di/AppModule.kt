@@ -2,6 +2,7 @@ package sq.mayv.aladhan.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
@@ -15,6 +16,9 @@ import sq.mayv.aladhan.data.ILocationService
 import sq.mayv.aladhan.data.LocationService
 import sq.mayv.aladhan.network.AladhanApi
 import sq.mayv.aladhan.repository.PrayersRepository
+import sq.mayv.aladhan.repository.RoomPrayerRepository
+import sq.mayv.aladhan.room.dao.PrayerDao
+import sq.mayv.aladhan.room.database.AladhanDatabase
 import sq.mayv.aladhan.util.PreferenceHelper
 import sq.mayv.aladhan.util.PreferenceHelper.baseUrl
 import java.util.concurrent.TimeUnit
@@ -26,21 +30,35 @@ import javax.inject.Singleton
 object AppModule {
 
     @Provides
+    @Singleton
     fun providePrayersRepository(api: AladhanApi) = PrayersRepository(api)
 
     @Provides
-    fun providePreferences(@ApplicationContext context: Context): SharedPreferences {
-        return PreferenceHelper.getPreference(context)
-    }
-
     @Singleton
+    fun providePreferences(@ApplicationContext context: Context) =
+        PreferenceHelper.getPreference(context)
+
     @Provides
+    @Singleton
     fun provideLocationClient(
         @ApplicationContext context: Context
     ): ILocationService = LocationService(
         context,
         LocationServices.getFusedLocationProviderClient(context)
     )
+
+    @Provides
+    @Singleton
+    fun provideAladhanDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, AladhanDatabase::class.java, "aladhan-database").build()
+
+    @Provides
+    @Singleton
+    fun providePrayerDao(database: AladhanDatabase) = database.dao
+
+    @Provides
+    @Singleton
+    fun provideRoomPrayerRepository(dao: PrayerDao) = RoomPrayerRepository(dao)
 
     @Singleton
     @Provides

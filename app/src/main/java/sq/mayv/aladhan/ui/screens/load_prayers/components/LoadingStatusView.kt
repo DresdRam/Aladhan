@@ -81,14 +81,15 @@ fun LoadingStatusView(
                         viewModel.storeTimings()
                     }
 
-                    MessageView(
+                    LoadingMessageView(
                         message = "Storing prayer timings locally.\nMight take a few seconds."
                     )
                 }
 
                 is LoadPrayersViewState.Failure -> {
                     MessageView(
-                        message = it.message
+                        message = it.message,
+                        textColor = Color.Red
                     )
                 }
             }

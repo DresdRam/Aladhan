@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,8 +40,8 @@ fun LoadingMessageView(
                 .wrapContentHeight()
                 .padding(vertical = 25.dp),
             shape = RoundedCornerShape(10.dp),
-            contentColor = Color.White,
-            elevation = 15.dp
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(15.dp)
         ) {
 
             Column(
@@ -69,7 +70,7 @@ fun LoadingMessageView(
                         modifier = Modifier
                             .size(50.dp)
                             .align(Alignment.Center),
-                        strokeWidth = 5.dp
+                        strokeWidth = 3.dp
                     )
                 }
             }

@@ -14,6 +14,8 @@ import sq.mayv.aladhan.model.Coordinates
 import sq.mayv.aladhan.model.Prayer
 import sq.mayv.aladhan.model.Response
 import sq.mayv.aladhan.repository.PrayersRepository
+import sq.mayv.aladhan.repository.RoomPrayerRepository
+import sq.mayv.aladhan.room.dao.PrayerDao
 import sq.mayv.aladhan.ui.screens.load_prayers.viewstate.LoadPrayersViewState
 import sq.mayv.aladhan.ui.screens.load_prayers.viewstate.PermissionViewState
 import sq.mayv.aladhan.usecase.LocationUseCase
@@ -23,8 +25,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoadPrayersViewModel @Inject constructor(
     private val prayersRepository: PrayersRepository,
+    private val roomPrayerRepository: RoomPrayerRepository,
     private val locationUseCase: LocationUseCase,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
 ) : ViewModel() {
 
     private val _viewState: MutableStateFlow<LoadPrayersViewState> =
@@ -73,7 +76,10 @@ class LoadPrayersViewModel @Inject constructor(
     }
 
     fun storeTimings() {
-        //Todo Store timings code
+        viewModelScope.launch(Dispatchers.IO) {
+            roomPrayerRepository.storeMonthlyPrayers(_prayersData.value.data?.data ?: listOf())
+            _viewState.value = LoadPrayersViewState.Stored
+        }
     }
 
     fun handleViewState(event: PermissionEvent) {

@@ -111,16 +111,7 @@ fun LoadPrayersScreen(
             }) {
             when (it) {
                 PermissionViewState.CheckingPermissions -> {
-                    Box(
-                        Modifier.fillMaxSize()
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .align(Alignment.Center),
-                            strokeWidth = 5.dp
-                        )
-                    }
+                    TODO("Implement a loading view.")
                 }
 
                 PermissionViewState.RevokedPermissions -> {

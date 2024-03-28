@@ -25,7 +25,7 @@ class SplashViewModel @Inject constructor(preferences: SharedPreferences) : View
             _startDestination.value = AppScreens.route(AppScreens.HomeScreen)
         } else {
             //Todo some extra logic for checking if prayers needs to download the new month timings.
-            //preferences.prayersDownloadIsNeeded = false
+            preferences.prayersDownloadIsNeeded = false
         }
 
         _isLoading.value = false
