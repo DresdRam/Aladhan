@@ -111,7 +111,7 @@ fun LoadPrayersScreen(
             }) {
             when (it) {
                 PermissionViewState.CheckingPermissions -> {
-                    TODO("Implement a loading view.")
+                    //TODO("Implement a loading view.")
                 }
 
                 PermissionViewState.RevokedPermissions -> {

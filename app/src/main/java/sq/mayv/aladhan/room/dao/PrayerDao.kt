@@ -2,22 +2,31 @@ package sq.mayv.aladhan.room.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import sq.mayv.aladhan.room.entity.PrayerEntity
+import sq.mayv.aladhan.room.entity.DateEntity
+import sq.mayv.aladhan.room.entity.TimingsEntity
+import sq.mayv.aladhan.room.entity.relation.DateWithTimings
 
 @Dao
 interface PrayerDao {
 
-    @Insert
-    suspend fun insert(prayer: PrayerEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDate(date: DateEntity): Long
 
-    @Query("SELECT * FROM prayer ORDER BY id ASC")
-    suspend fun getAll(): List<PrayerEntity>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTimings(timings: TimingsEntity): Long
 
-    @Query("SELECT id FROM prayer WHERE day = :day AND month_number = :month AND year = :year")
-    suspend fun getTodayId(day: Int, month: Int, year: Int): Int
+    @Query("SELECT * FROM date ORDER BY id ASC")
+    suspend fun getAll(): List<DateWithTimings>
 
-    @Query("DELETE FROM prayer")
-    suspend fun deleteAll()
+    @Query("SELECT id FROM date WHERE day = :day AND month_number = :month AND year = :year")
+    suspend fun getTodayId(day: Int, month: Int, year: Int): Long
+
+    @Query("DELETE FROM date")
+    suspend fun deleteAllDates()
+
+    @Query("DELETE FROM timings")
+    suspend fun deleteAllTimings()
 
 }

@@ -4,5 +4,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun HomeViewShimmer() {
-    TODO("Implement the home screen shimmer view")
+    //TODO("Implement the home screen shimmer view")
 }
