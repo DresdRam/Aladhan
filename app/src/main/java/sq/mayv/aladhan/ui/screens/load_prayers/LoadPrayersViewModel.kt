@@ -15,10 +15,10 @@ import sq.mayv.aladhan.model.Prayer
 import sq.mayv.aladhan.model.Response
 import sq.mayv.aladhan.repository.PrayersRepository
 import sq.mayv.aladhan.repository.RoomPrayerRepository
-import sq.mayv.aladhan.room.dao.PrayerDao
 import sq.mayv.aladhan.ui.screens.load_prayers.viewstate.LoadPrayersViewState
 import sq.mayv.aladhan.ui.screens.load_prayers.viewstate.PermissionViewState
 import sq.mayv.aladhan.usecase.LocationUseCase
+import sq.mayv.aladhan.util.PreferenceHelper.downloadEndDate
 import sq.mayv.aladhan.util.PreferenceHelper.prayersDownloadIsNeeded
 import javax.inject.Inject
 
@@ -63,13 +63,14 @@ class LoadPrayersViewModel @Inject constructor(
                     _viewState.value = LoadPrayersViewState.Failure(
                         _prayersData.value.exception.message ?: "Loading Failed!"
                     )
-
-                    // setting prayersDownloadIsNeeded as true so the next time the app is opened
-                    // it tries again to load prayers.
-                    preferences.prayersDownloadIsNeeded = true
                 } else {
                     _viewState.value =
                         LoadPrayersViewState.Loaded(_prayersData.value.data?.data ?: listOf(Prayer()))
+
+                    val lastIndex = _prayersData.value.data!!.data.lastIndex
+                    val lastDate = _prayersData.value.data!!.data[lastIndex].date.gregorian.date
+
+                    preferences.downloadEndDate = lastDate
                 }
             }
         }
@@ -77,7 +78,9 @@ class LoadPrayersViewModel @Inject constructor(
 
     fun storeTimings() {
         viewModelScope.launch(Dispatchers.IO) {
+            roomPrayerRepository.deleteAll()
             roomPrayerRepository.storeMonthlyPrayers(_prayersData.value.data?.data ?: listOf())
+            preferences.prayersDownloadIsNeeded = false // So the app opens on Home Screen.
             _viewState.value = LoadPrayersViewState.Stored
         }
     }

@@ -1,18 +1,23 @@
 package sq.mayv.aladhan.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import sq.mayv.aladhan.data.AlarmService
 import sq.mayv.aladhan.model.Prayer
 import sq.mayv.aladhan.room.dao.PrayerDao
 import sq.mayv.aladhan.room.entity.DateEntity
 import sq.mayv.aladhan.room.entity.TimingsEntity
 import javax.inject.Inject
 
+
 class RoomPrayerRepository @Inject constructor(
+    private val alarmService: AlarmService,
     private val dao: PrayerDao
 ) {
 
     suspend fun storeMonthlyPrayers(prayers: List<Prayer>) {
 
-        for(prayer in prayers) {
+        for (prayer in prayers) {
 
             val isJumaa = prayer.date.gregorian.weekday.en == "Friday"
 
@@ -34,7 +39,7 @@ class RoomPrayerRepository @Inject constructor(
                 sunrise = prayer.timings.sunrise.take(5),
                 sunriseReadable = "Sunrise",
                 dhuhr = prayer.timings.dhuhr.take(5),
-                dhuhrReadable = if(isJumaa) "Jumaa" else "Dhuhr",
+                dhuhrReadable = if (isJumaa) "Jumaa" else "Dhuhr",
                 asr = prayer.timings.asr.take(5),
                 asrReadable = "Asr",
                 maghrib = prayer.timings.maghrib.take(5),
@@ -42,6 +47,8 @@ class RoomPrayerRepository @Inject constructor(
                 isha = prayer.timings.isha.take(5),
                 ishaReadable = "Isha"
             )
+
+            alarmService.schedulePrayerAlarms(prayer)
 
             dao.insertTimings(timings)
         }
@@ -53,4 +60,9 @@ class RoomPrayerRepository @Inject constructor(
     suspend fun getMonthlyPrayers() = dao.getAll()
 
     suspend fun getAllDates() = dao.getAllDates()
+
+    suspend fun deleteAll(){
+        dao.deleteAllDates()
+        dao.deleteAllTimings()
+    }
 }

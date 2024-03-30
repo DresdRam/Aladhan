@@ -1,6 +1,7 @@
 package sq.mayv.aladhan.ui.screens.load_prayers
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -10,19 +11,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -36,7 +32,6 @@ import sq.mayv.aladhan.extension.openAppSettings
 import sq.mayv.aladhan.extension.permissionsAreGranted
 import sq.mayv.aladhan.ui.screens.load_prayers.components.LoadingStatusView
 import sq.mayv.aladhan.ui.screens.load_prayers.viewstate.PermissionViewState
-import sq.mayv.aladhan.util.LocationPermissionTextProvider
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -46,9 +41,18 @@ fun LoadPrayersScreen(
 ) {
 
     val context = LocalContext.current as MainActivity
-    val permissions = listOf(
-        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-    )
+    val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    } else {
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    }
 
     val permissionState = rememberMultiplePermissionsState(
         permissions = permissions
@@ -78,8 +82,7 @@ fun LoadPrayersScreen(
 
         permissionState.shouldShowRationale -> {
             PermissionDialog(
-                permissionTextProvider = LocationPermissionTextProvider(),
-                onDismiss = {},
+                onDismiss = { },
                 onOkClick = {
                     permissionState.launchMultiplePermissionRequest()
                 }

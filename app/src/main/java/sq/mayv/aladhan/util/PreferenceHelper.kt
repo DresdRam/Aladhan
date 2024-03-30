@@ -9,6 +9,7 @@ object PreferenceHelper {
 
     private const val BASE_URL = "BASE_URL"
     private const val PRAYERS_DOWNLOAD_IS_NEEDED = "PRAYERS_DOWNLOAD_IS_NEEDED"
+    private const val DOWNLOAD_END_DATE = "DOWNLOAD_END_DATE"
 
     fun getPreference(context: Context): SharedPreferences =
         context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -24,6 +25,14 @@ object PreferenceHelper {
         set(value) {
             edit {
                 it.putString(BASE_URL, value)
+            }
+        }
+
+    var SharedPreferences.downloadEndDate
+        get() = getString(DOWNLOAD_END_DATE, "")!!
+        set(value) {
+            edit {
+                it.putString(DOWNLOAD_END_DATE, value)
             }
         }
 

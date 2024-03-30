@@ -1,5 +1,6 @@
 package sq.mayv.aladhan.di
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
@@ -12,6 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sq.mayv.aladhan.data.AlarmService
 import sq.mayv.aladhan.data.ILocationService
 import sq.mayv.aladhan.data.LocationService
 import sq.mayv.aladhan.network.AladhanApi
@@ -19,6 +21,7 @@ import sq.mayv.aladhan.repository.PrayersRepository
 import sq.mayv.aladhan.repository.RoomPrayerRepository
 import sq.mayv.aladhan.room.dao.PrayerDao
 import sq.mayv.aladhan.room.database.AladhanDatabase
+import sq.mayv.aladhan.util.AlarmScheduler
 import sq.mayv.aladhan.util.PreferenceHelper
 import sq.mayv.aladhan.util.PreferenceHelper.baseUrl
 import java.util.concurrent.TimeUnit
@@ -58,7 +61,29 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRoomPrayerRepository(dao: PrayerDao) = RoomPrayerRepository(dao)
+    fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager =
+        context.getSystemService(
+            AlarmManager::class.java
+        )
+
+    @Provides
+    @Singleton
+    fun provideRoomPrayerRepository(dao: PrayerDao, alarmService: AlarmService) =
+        RoomPrayerRepository(alarmService = alarmService, dao = dao)
+
+    @Provides
+    @Singleton
+    fun provideApplicationContext(@ApplicationContext context: Context) = context
+
+    @Provides
+    @Singleton
+    fun provideAlarmScheduler(@ApplicationContext context: Context, alarmManager: AlarmManager) =
+        AlarmScheduler(context = context, alarmManager = alarmManager)
+
+    @Provides
+    @Singleton
+    fun provideAlarmService(alarmScheduler: AlarmScheduler) =
+        AlarmService(alarmScheduler = alarmScheduler)
 
     @Singleton
     @Provides

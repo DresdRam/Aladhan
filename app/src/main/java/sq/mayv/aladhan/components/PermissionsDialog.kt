@@ -14,11 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import sq.mayv.aladhan.data.IPermissionTextProvider
 
 @Composable
 fun PermissionDialog(
-    permissionTextProvider: IPermissionTextProvider,
     onDismiss: () -> Unit,
     onOkClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,7 +52,7 @@ fun PermissionDialog(
         },
         text = {
             Text(
-                text = permissionTextProvider.getDescription()
+                text = "Aladhan needs these permissions in order to function properly."
             )
         },
         modifier = modifier
