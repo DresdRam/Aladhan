@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,9 +28,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import sq.mayv.aladhan.R
 import sq.mayv.aladhan.components.MessageView
-import sq.mayv.aladhan.ui.screens.home.components.HomeView
-import sq.mayv.aladhan.ui.screens.home.components.HomeViewShimmer
-import sq.mayv.aladhan.ui.screens.home.viewstate.HomeViewState
+import sq.mayv.aladhan.components.RoundedButton
+import sq.mayv.aladhan.ui.navigation.AppScreens
+import sq.mayv.aladhan.ui.screens.home.components.NextPrayerView
+import sq.mayv.aladhan.ui.screens.home.components.NextPrayerViewShimmer
+import sq.mayv.aladhan.ui.screens.home.components.NoNextPrayerView
+import sq.mayv.aladhan.ui.screens.home.components.TimingsView
+import sq.mayv.aladhan.ui.screens.home.components.TimingsViewShimmer
+import sq.mayv.aladhan.ui.screens.home.viewstate.NextPrayerViewState
+import sq.mayv.aladhan.ui.screens.home.viewstate.TimingsViewState
 
 @Composable
 fun HomeScreen(
@@ -37,16 +44,57 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
-    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
+    val timingsViewState by viewModel.timingsViewState.collectAsStateWithLifecycle()
+    val nextPrayerViewState by viewModel.nextPrayerViewState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadTimings()
+        viewModel.loadNextPrayer()
     }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = colorResource(id = R.color.primary)
     ) {
+
+        AnimatedContent(
+            targetState = nextPrayerViewState,
+            label = "ViewState Animation",
+            transitionSpec = {
+                fadeIn(
+                    animationSpec = tween(600, easing = EaseIn)
+                ).togetherWith(
+                    fadeOut(
+                        animationSpec = tween(600, easing = EaseOut)
+                    )
+                )
+            }) { state ->
+
+            Column(
+                modifier = Modifier
+                    .padding(top = 40.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+
+                when (state) {
+                    NextPrayerViewState.Loading -> {
+                        NextPrayerViewShimmer()
+                    }
+
+                    NextPrayerViewState.NoNextPrayer -> {
+                        NoNextPrayerView()
+                    }
+
+                    is NextPrayerViewState.Success -> {
+                        NextPrayerView(
+                            nextPrayer = state.nextPrayer,
+                            viewModel = viewModel
+                        )
+                    }
+                }
+            }
+        }
 
         Card(
             modifier = Modifier
@@ -57,43 +105,52 @@ fun HomeScreen(
                 containerColor = Color.White
             )
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(top = 15.dp)
-                    .fillMaxWidth()
-            ) {
 
-                AnimatedContent(
-                    targetState = viewState,
-                    label = "ViewState Animation",
-                    transitionSpec = {
-                        fadeIn(
-                            animationSpec = tween(600, easing = EaseIn)
-                        ).togetherWith(
-                            fadeOut(
-                                animationSpec = tween(600, easing = EaseOut)
-                            )
+            AnimatedContent(
+                targetState = timingsViewState,
+                label = "ViewState Animation",
+                transitionSpec = {
+                    fadeIn(
+                        animationSpec = tween(600, easing = EaseIn)
+                    ).togetherWith(
+                        fadeOut(
+                            animationSpec = tween(600, easing = EaseOut)
                         )
-                    }) {
-                    when (it) {
-                        HomeViewState.Failure -> {
-                            MessageView(
-                                message = "Failed to load the timings from the database!",
-                                textColor = Color.Red
-                            )
-                        }
+                    )
+                }) {
+                when (it) {
+                    TimingsViewState.Failure -> {
+                        MessageView(
+                            message = "Failed to load the timings from the database!",
+                            textColor = Color.Red
+                        )
+                    }
 
-                        HomeViewState.Loading -> {
-                            HomeViewShimmer()
-                        }
+                    TimingsViewState.Loading -> {
+                        TimingsViewShimmer()
+                    }
 
-                        is HomeViewState.Success -> {
-                            HomeView(it.prayers, it.todayId)
-                        }
+                    is TimingsViewState.Success -> {
+                        TimingsView(
+                            prayers = it.prayers,
+                            indexOfToday = it.indexOfToday
+                        )
                     }
                 }
-
             }
+
+            RoundedButton(
+                modifier = Modifier
+                    .padding(top = 40.dp)
+                    .padding(horizontal = 25.dp)
+                    .fillMaxWidth(),
+                text = "Calendar",
+                onClicked = {
+                    navController.navigate(AppScreens.route(AppScreens.CalendarScreen)) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }

@@ -20,8 +20,11 @@ interface PrayerDao {
     @Query("SELECT * FROM date ORDER BY id ASC")
     suspend fun getAll(): List<DateWithTimings>
 
-    @Query("SELECT id FROM date WHERE day = :day AND month_number = :month AND year = :year")
-    suspend fun getTodayId(day: Int, month: Int, year: Int): Long
+    @Query("SELECT * FROM date ORDER BY id ASC")
+    suspend fun getAllDates(): List<DateEntity>
+
+    @Query("SELECT * FROM date WHERE day = :day")
+    suspend fun getPrayerByDate(day: Int): DateWithTimings
 
     @Query("DELETE FROM date")
     suspend fun deleteAllDates()
