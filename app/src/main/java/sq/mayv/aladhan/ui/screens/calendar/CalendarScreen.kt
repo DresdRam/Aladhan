@@ -26,10 +26,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import sq.mayv.aladhan.R
+import sq.mayv.aladhan.components.MessageView
+import sq.mayv.aladhan.ui.screens.calendar.components.CalendarShimmerView
 import sq.mayv.aladhan.ui.screens.calendar.components.CalendarView
 import sq.mayv.aladhan.ui.screens.calendar.viewstate.CalendarTimingViewState
 import sq.mayv.aladhan.ui.screens.calendar.viewstate.CalendarViewState
 import sq.mayv.aladhan.ui.screens.home.components.TimingsItemView
+import sq.mayv.aladhan.ui.screens.home.components.TimingsViewShimmer
 import java.util.Calendar
 
 @Composable
@@ -82,8 +85,15 @@ fun CalendarScreen(
 
             AnimatedContent(targetState = viewState, label = "") { state ->
                 when (state) {
-                    CalendarViewState.Failure -> {}
-                    CalendarViewState.Loading -> {}
+                    CalendarViewState.Failure -> {
+                        MessageView(
+                            message = "Failed to load the calendar!",
+                            textColor = Color.Red
+                        )
+                    }
+                    CalendarViewState.Loading -> {
+                        CalendarShimmerView()
+                    }
                     is CalendarViewState.Success -> {
                         CalendarView(dates = state.dates) { day ->
                             if (selectedDay != day) {
@@ -96,8 +106,15 @@ fun CalendarScreen(
 
             AnimatedContent(targetState = timingsViewState, label = "") { state ->
                 when (state) {
-                    CalendarTimingViewState.Failure -> {}
-                    CalendarTimingViewState.Loading -> {}
+                    CalendarTimingViewState.Failure -> {
+                        MessageView(
+                            message = "Failed to load the timings!",
+                            textColor = Color.Red
+                        )
+                    }
+                    CalendarTimingViewState.Loading -> {
+                        TimingsViewShimmer()
+                    }
                     is CalendarTimingViewState.Success -> {
                         TimingsItemView(timings = state.timings)
                     }

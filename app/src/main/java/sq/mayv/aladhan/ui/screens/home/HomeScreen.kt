@@ -30,11 +30,11 @@ import sq.mayv.aladhan.R
 import sq.mayv.aladhan.components.MessageView
 import sq.mayv.aladhan.components.RoundedButton
 import sq.mayv.aladhan.ui.navigation.AppScreens
+import sq.mayv.aladhan.ui.screens.home.components.HomePrayerShimmerView
 import sq.mayv.aladhan.ui.screens.home.components.NextPrayerView
 import sq.mayv.aladhan.ui.screens.home.components.NextPrayerViewShimmer
 import sq.mayv.aladhan.ui.screens.home.components.NoNextPrayerView
 import sq.mayv.aladhan.ui.screens.home.components.TimingsView
-import sq.mayv.aladhan.ui.screens.home.components.TimingsViewShimmer
 import sq.mayv.aladhan.ui.screens.home.viewstate.NextPrayerViewState
 import sq.mayv.aladhan.ui.screens.home.viewstate.TimingsViewState
 
@@ -127,7 +127,7 @@ fun HomeScreen(
                     }
 
                     TimingsViewState.Loading -> {
-                        TimingsViewShimmer()
+                        HomePrayerShimmerView()
                     }
 
                     is TimingsViewState.Success -> {

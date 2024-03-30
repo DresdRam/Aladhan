@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import sq.mayv.aladhan.MainActivity
+import sq.mayv.aladhan.components.LoadingMessageView
 import sq.mayv.aladhan.components.MessageView
 import sq.mayv.aladhan.components.PermissionDialog
 import sq.mayv.aladhan.data.PermissionEvent
@@ -114,7 +115,7 @@ fun LoadPrayersScreen(
             }) {
             when (it) {
                 PermissionViewState.CheckingPermissions -> {
-                    //TODO("Implement a loading view.")
+                    LoadingMessageView(message = "Checking Permissions")
                 }
 
                 PermissionViewState.RevokedPermissions -> {
